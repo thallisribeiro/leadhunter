@@ -33,11 +33,11 @@
 **Interfaces:**
 - Produces: `db`, `migrateDatabase()`, `seedDemoData()`, `enqueueJob(input)`, `claimNextJob(workerId)`, `completeJob(id, result)`, `failJob(id, error)`, `recoverStaleJobs(now)`.
 
-- [ ] Write schema/queue tests that assert foreign keys, unique job keys, atomic claims, bounded retry/backoff, dead-letter, and stale-running recovery.
-- [ ] Run `pnpm vitest run src/db/schema.test.ts src/worker/queue.test.ts`; confirm failure because the modules do not exist.
-- [ ] Scaffold the stable dependencies and strict configuration, create the complete schema/migration, and implement SQLite connection pragmas plus queue operations.
-- [ ] Run migration, focused tests, `pnpm lint`, and `pnpm typecheck`; confirm all pass.
-- [ ] Commit as `feat: establish database and durable jobs`.
+- [x] Write schema/queue tests that assert foreign keys, unique job keys, atomic claims, bounded retry/backoff, dead-letter, and stale-running recovery.
+- [x] Run `pnpm vitest run src/db/schema.test.ts src/worker/queue.test.ts`; confirm failure because the modules do not exist.
+- [x] Scaffold the stable dependencies and strict configuration, create the complete schema/migration, and implement SQLite connection pragmas plus queue operations.
+- [x] Run migration, focused tests, `pnpm lint`, and `pnpm typecheck`; confirm all pass.
+- [x] Commit as `feat: establish database and durable jobs`.
 
 ### Task 2: Business onboarding, campaigns, and application shell
 
@@ -158,4 +158,3 @@
 - [ ] Run a bounded Overpass request and one public seed-URL enrichment; persist/report the exact result without making automated tests network-dependent.
 - [ ] Rewrite README for LeadHunter, write PT-BR setup/backup/troubleshooting instructions, preserve `PROMPT.md` at `docs/reference/buscandomilhao.md`, and document only credentials required for optional real integrations.
 - [ ] Commit as `feat: complete LeadHunter local MVP`.
-
