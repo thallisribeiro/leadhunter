@@ -68,11 +68,11 @@
 **Interfaces:**
 - Produces: `LeadDiscoveryProvider.discover(input): AsyncGenerator<DiscoveredLead>`, `normalizeLeadIdentity()`, `upsertDiscoveredLead(tx, lead, source)`, and provider factories.
 
-- [ ] Write failing tests for domain/email/phone/canonical-URL/name-location matches, multi-source merging, concurrent idempotency, header aliases/mapping, seed URLs, Overpass query generation/cache/rate handling, and optional Google Places disablement.
-- [ ] Run focused tests and confirm they fail for missing behavior.
-- [ ] Implement the provider contract, normalization, transactional upsert/source history, CSV parser, seed provider, conservative Overpass client, and key-gated Google Places adapter.
-- [ ] Run focused tests plus lint/typecheck.
-- [ ] Commit as `feat: discover and deduplicate leads`.
+- [x] Write failing tests for domain/email/phone/canonical-URL/name-location matches, multi-source merging, concurrent idempotency, header aliases/mapping, seed URLs, Overpass query generation/cache/rate handling, and optional Google Places disablement.
+- [x] Run focused tests and confirm they fail for missing behavior.
+- [x] Implement the provider contract, normalization, transactional upsert/source history, CSV parser, seed provider, conservative Overpass client, and key-gated Google Places adapter.
+- [x] Run focused tests plus lint/typecheck.
+- [x] Commit as `feat: discover and deduplicate leads`.
 
 ### Task 4: Safe enrichment and evidence
 
