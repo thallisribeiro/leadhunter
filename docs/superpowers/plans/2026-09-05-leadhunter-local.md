@@ -101,11 +101,11 @@
 **Interfaces:**
 - Produces: `calculateLeadScore(input): { score; confidence; breakdown }`, `scoreLead(leadId)`, `interpretEvidence(input)`, `recordAiCall(input)`, `assertAiBudgetAvailable()`.
 
-- [ ] Write failing tests for the five score sections, 0–100 clamping, exclusions, campaign-weighted signals, confidence independent from score, deterministic no-key fallback, structured LLM validation, evidence-only output, and monthly budget cutoff.
-- [ ] Run focused tests and confirm the score/LLM modules are missing.
-- [ ] Implement deterministic scoring and the centralized OpenAI-compatible client with Zod parsing, model selection, call accounting, and graceful unavailability.
-- [ ] Run focused tests plus lint/typecheck.
-- [ ] Commit as `feat: score leads and track ai usage`.
+- [x] Write failing tests for the five score sections, 0–100 clamping, exclusions, campaign-weighted signals, confidence independent from score, deterministic no-key fallback, structured LLM validation, evidence-only output, and monthly budget cutoff.
+- [x] Run focused tests and confirm the score/LLM modules are missing.
+- [x] Implement deterministic scoring and the centralized OpenAI-compatible client with Zod parsing, model selection, call accounting, and graceful unavailability.
+- [x] Run focused tests plus lint/typecheck.
+- [x] Commit as `feat: score leads and track ai usage`.
 
 ### Task 6: Outreach, suppression, dry-run email, and export
 
