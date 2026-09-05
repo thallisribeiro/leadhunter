@@ -29,6 +29,9 @@ importers:
       openai:
         specifier: ^7.10.0
         version: 7.10.0(undici@7.29.0)(zod@4.5.4)
+      playwright-core:
+        specifier: 1.62.1
+        version: 1.62.1
       react:
         specifier: ^19.2.8
         version: 19.2.8

@@ -15,6 +15,12 @@ export function getDashboardMetrics(database: AppDatabase) {
     averageScore: (sqlite.prepare("SELECT COALESCE(avg(score), 0) as average FROM lead_scores").get() as { average: number }).average,
     topSources: sqlite.prepare("SELECT provider, count(DISTINCT lead_id) as count FROM lead_sources GROUP BY provider ORDER BY count DESC LIMIT 5").all() as Array<{ provider: string; count: number }>,
     runningJobs: (sqlite.prepare("SELECT count(*) as count FROM jobs WHERE status = 'running'").get() as { count: number }).count,
+    dmsSentToday: (sqlite.prepare("SELECT count(*) as count FROM messages WHERE direction = 'out' AND sent_via = 'browser' AND created_at >= ?").get(new Date(new Date().toISOString().slice(0, 10)).toISOString()) as { count: number }).count,
+    dmDryRuns: (sqlite.prepare("SELECT count(*) as count FROM messages WHERE direction = 'out' AND sent_via = 'dry_run'").get() as { count: number }).count,
+    inboundMessages: (sqlite.prepare("SELECT count(*) as count FROM messages WHERE direction = 'in'").get() as { count: number }).count,
+    handoffs: count(database, "status IN ('whatsapp_handoff','registered','active_customer','joined_affiliate_group','active_affiliate','generated_customer')"),
+    activeCustomers: count(database, "status IN ('active_customer','generated_customer','won')"),
+    openExceptions: (sqlite.prepare("SELECT count(*) as count FROM exceptions WHERE resolved = 0").get() as { count: number }).count,
     recentErrors: sqlite.prepare("SELECT id, type, error, updated_at FROM jobs WHERE error IS NOT NULL ORDER BY updated_at DESC LIMIT 5").all() as Array<{ id: string; type: string; error: string; updated_at: string }>,
   };
 }

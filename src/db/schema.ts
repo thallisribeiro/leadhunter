@@ -30,6 +30,17 @@ export const businessProfiles = sqliteTable("business_profiles", {
   outreachLanguage: text("outreach_language").notNull().default("pt-BR"),
   exampleMessages: text("example_messages").notNull().default("[]"),
   additionalInstructions: text("additional_instructions"),
+  ownerName: text("owner_name"),
+  ownerRole: text("owner_role"),
+  instagramHandle: text("instagram_handle"),
+  whatsappLink: text("whatsapp_link"),
+  affiliateGroupLink: text("affiliate_group_link"),
+  howItWorks: text("how_it_works"),
+  revenueModel: text("revenue_model"),
+  marketJargon: text("market_jargon"),
+  unverifiedClaims: text("unverified_claims").notNull().default("[]"),
+  affiliateTopics: text("affiliate_topics").notNull().default("[]"),
+  geography: text("geography"),
   ...utcColumns,
 });
 
@@ -48,6 +59,9 @@ export const campaigns = sqliteTable("campaigns", {
   minimumScore: integer("minimum_score").notNull().default(70),
   outreachLanguage: text("outreach_language").notNull().default("pt-BR"),
   status: text("status").notNull().default("draft"),
+  funnel: text("funnel").notNull().default("customer"),
+  autopilot: integer("autopilot", { mode: "boolean" }).notNull().default(false),
+  hashtags: text("hashtags").notNull().default("[]"),
   ...utcColumns,
 });
 
@@ -72,7 +86,95 @@ export const leads = sqliteTable("leads", {
   status: text("status").notNull().default("discovered"),
   shortlisted: integer("shortlisted", { mode: "boolean" }).notNull().default(false),
   lastActionAt: text("last_action_at"),
+  funnel: text("funnel").notNull().default("customer"),
+  instagramHandle: text("instagram_handle").unique(),
+  profile: text("profile"),
+  decisionRole: text("decision_role"),
+  channelState: text("channel_state").notNull().default("browser_contact_pending"),
+  metaUserId: text("meta_user_id").unique(),
+  nextActionAt: text("next_action_at"),
   ...utcColumns,
+});
+
+export const conversations = sqliteTable("conversations", {
+  id: text("id").primaryKey(),
+  leadId: text("lead_id").notNull().unique().references(() => leads.id, { onDelete: "cascade" }),
+  channel: text("channel").notNull().default("instagram"),
+  owner: text("owner").notNull().default("browser"),
+  state: text("state").notNull().default("browser_contact_pending"),
+  metaUserId: text("meta_user_id"),
+  lastInboundAt: text("last_inbound_at"),
+  lastOutboundAt: text("last_outbound_at"),
+  followupsSent: integer("followups_sent").notNull().default(0),
+  ...utcColumns,
+});
+
+export const messages = sqliteTable("messages", {
+  id: text("id").primaryKey(),
+  conversationId: text("conversation_id").notNull().references(() => conversations.id, { onDelete: "cascade" }),
+  leadId: text("lead_id").notNull().references(() => leads.id, { onDelete: "cascade" }),
+  direction: text("direction").notNull(),
+  channel: text("channel").notNull().default("instagram"),
+  sentVia: text("sent_via"),
+  text: text("text").notNull(),
+  variantId: text("variant_id"),
+  externalId: text("external_id").unique(),
+  intent: text("intent"),
+  createdAt: text("created_at").notNull(),
+});
+
+export const experiments = sqliteTable("experiments", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  variable: text("variable").notNull(),
+  funnel: text("funnel").notNull().default("customer"),
+  status: text("status").notNull().default("running"),
+  createdAt: text("created_at").notNull(),
+});
+
+export const experimentVariants = sqliteTable("experiment_variants", {
+  id: text("id").primaryKey(),
+  experimentId: text("experiment_id").notNull().references(() => experiments.id, { onDelete: "cascade" }),
+  name: text("name").notNull(),
+  template: text("template").notNull(),
+  weight: real("weight").notNull().default(1),
+  createdAt: text("created_at").notNull(),
+});
+
+export const experimentAssignments = sqliteTable("experiment_assignments", {
+  leadId: text("lead_id").notNull().references(() => leads.id, { onDelete: "cascade" }),
+  experimentId: text("experiment_id").notNull().references(() => experiments.id, { onDelete: "cascade" }),
+  variantId: text("variant_id").notNull().references(() => experimentVariants.id, { onDelete: "cascade" }),
+  createdAt: text("created_at").notNull(),
+}, (table) => [uniqueIndex("experiment_assignments_pk").on(table.leadId, table.experimentId)]);
+
+export const aiDecisions = sqliteTable("ai_decisions", {
+  id: text("id").primaryKey(),
+  leadId: text("lead_id").notNull().references(() => leads.id, { onDelete: "cascade" }),
+  conversationId: text("conversation_id").references(() => conversations.id, { onDelete: "set null" }),
+  intent: text("intent").notNull(),
+  action: text("action").notNull(),
+  reply: text("reply"),
+  reasoning: text("reasoning").notNull().default(""),
+  model: text("model"),
+  createdAt: text("created_at").notNull(),
+});
+
+export const webhookEvents = sqliteTable("webhook_events", {
+  id: text("id").primaryKey(),
+  provider: text("provider").notNull(),
+  payload: text("payload").notNull(),
+  processedAt: text("processed_at"),
+  createdAt: text("created_at").notNull(),
+});
+
+export const exceptions = sqliteTable("exceptions", {
+  id: text("id").primaryKey(),
+  leadId: text("lead_id").references(() => leads.id, { onDelete: "set null" }),
+  kind: text("kind").notNull(),
+  message: text("message").notNull(),
+  resolved: integer("resolved", { mode: "boolean" }).notNull().default(false),
+  createdAt: text("created_at").notNull(),
 });
 
 export const campaignLeads = sqliteTable("campaign_leads", {

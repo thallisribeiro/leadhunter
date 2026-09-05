@@ -5,6 +5,8 @@ export interface DiscoveryInput {
   keywords: string[];
   limit: number;
   seedUrls?: string[];
+  hashtags?: string[];
+  funnel?: "customer" | "affiliate";
 }
 
 export interface DiscoveredLead {

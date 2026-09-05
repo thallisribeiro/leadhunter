@@ -12,10 +12,13 @@ export const campaignSchema = z.object({
   requiredSignals: z.array(z.string().trim().min(1)).default([]),
   preferredSignals: z.array(z.string().trim().min(1)).default([]),
   excludedSignals: z.array(z.string().trim().min(1)).default([]),
-  sources: z.array(z.enum(["csv", "seed_urls", "overpass", "google_places"])).min(1),
+  sources: z.array(z.enum(["csv", "seed_urls", "overpass", "google_places", "instagram"])).min(1),
   targetLeadCount: z.number().int().min(1).max(5_000),
   minimumScore: z.number().int().min(0).max(100),
   outreachLanguage: z.string().trim().min(2),
+  funnel: z.enum(["customer", "affiliate"]).default("customer"),
+  autopilot: z.boolean().default(false),
+  hashtags: z.array(z.string().trim().min(1).transform((value) => value.replace(/^#/, "").toLowerCase())).default([]),
 });
 
 export type CampaignInput = z.input<typeof campaignSchema>;

@@ -26,6 +26,18 @@ export const businessProfileSchema = z.object({
   outreachLanguage: z.string().trim().min(2).default("pt-BR"),
   exampleMessages: textList,
   additionalInstructions: z.string().trim().nullable().optional(),
+  // CONFIGURAÇÃO block of the original "Buscando 1 Milhão" prompt. All optional so a web-only setup still works.
+  ownerName: z.string().trim().nullable().optional(),
+  ownerRole: z.string().trim().nullable().optional(),
+  instagramHandle: z.string().trim().nullable().optional().transform((value) => (value ? value.replace(/^@/, "").toLowerCase() : value)),
+  whatsappLink: z.union([z.url(), z.literal(""), z.null()]).optional().transform((value) => value || null),
+  affiliateGroupLink: z.union([z.url(), z.literal(""), z.null()]).optional().transform((value) => value || null),
+  howItWorks: z.string().trim().nullable().optional(),
+  revenueModel: z.string().trim().nullable().optional(),
+  marketJargon: z.string().trim().nullable().optional(),
+  unverifiedClaims: textList,
+  affiliateTopics: textList,
+  geography: z.string().trim().nullable().optional(),
 });
 
 export type BusinessProfileInput = z.input<typeof businessProfileSchema>;

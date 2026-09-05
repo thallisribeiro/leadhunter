@@ -1,9 +1,10 @@
 import type { AppDatabase } from "@/db/client";
 
-export type SuppressionType = "email" | "domain" | "phone" | "company";
+export type SuppressionType = "email" | "domain" | "phone" | "company" | "instagram";
 
 function normalize(type: SuppressionType, value: string): string {
   if (type === "email") return value.trim().toLowerCase();
+  if (type === "instagram") return value.trim().toLowerCase().replace(/^@/, "").replace(/^https?:\/\/(www\.)?instagram\.com\//, "").replace(/\/.*$/, "");
   if (type === "phone") return value.replace(/\D/g, "");
   if (type === "domain") {
     try { return new URL(/^https?:\/\//i.test(value) ? value : `https://${value}`).hostname.toLowerCase().replace(/^www\./, ""); } catch { return value.trim().toLowerCase(); }

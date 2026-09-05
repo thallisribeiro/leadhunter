@@ -9,7 +9,7 @@ export const campaignStatusLabels: Record<CampaignStatus, string> = {
   ready: "Pronta", paused: "Pausada", completed: "Concluída", failed: "Com falha",
 };
 
-const listFields = ["targetLocations", "industries", "keywords", "requiredSignals", "preferredSignals", "excludedSignals", "sources"] as const;
+const listFields = ["targetLocations", "industries", "keywords", "requiredSignals", "preferredSignals", "excludedSignals", "sources", "hashtags"] as const;
 
 function decode(row: typeof campaigns.$inferSelect): Campaign {
   const decoded = Object.fromEntries(listFields.map((field) => [field, JSON.parse(row[field]) as string[]]));
@@ -25,7 +25,7 @@ export function createCampaign(database: AppDatabase, input: CampaignInput): Cam
     targetLocations: JSON.stringify(value.targetLocations), industries: JSON.stringify(value.industries),
     keywords: JSON.stringify(value.keywords), requiredSignals: JSON.stringify(value.requiredSignals),
     preferredSignals: JSON.stringify(value.preferredSignals), excludedSignals: JSON.stringify(value.excludedSignals),
-    sources: JSON.stringify(value.sources),
+    sources: JSON.stringify(value.sources), hashtags: JSON.stringify(value.hashtags),
   };
   const id = crypto.randomUUID();
   database.insert(campaigns).values({ ...stored, id, status: "draft", createdAt: timestamp, updatedAt: timestamp }).run();

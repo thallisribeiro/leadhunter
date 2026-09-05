@@ -1,6 +1,6 @@
 import type { AppDatabase } from "@/db/client";
 
-export const jobTypes = ["discover_leads", "enrich_lead", "score_lead", "generate_outreach", "send_email", "export_campaign"] as const;
+export const jobTypes = ["discover_leads", "enrich_lead", "score_lead", "generate_outreach", "send_email", "export_campaign", "discover_instagram", "send_instagram_dm", "followup", "process_inbound", "send_api_reply", "send_whatsapp", "autopilot_tick", "rebalance_experiments"] as const;
 export type JobType = (typeof jobTypes)[number];
 export type JobStatus = "pending" | "running" | "completed" | "failed" | "retry_scheduled" | "dead";
 

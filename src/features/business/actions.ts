@@ -4,7 +4,7 @@ import { businessProfiles } from "@/db/schema";
 import { businessProfileSchema, type BusinessProfile, type BusinessProfileInput } from "@/features/business/schema";
 
 const profileId = "local-business";
-const jsonFields = ["verifiedClaims", "forbiddenClaims", "targetIndustries", "targetBusinessTypes", "targetLocations", "targetKeywords", "positiveSignals", "negativeSignals", "exclusions", "exampleMessages"] as const;
+const jsonFields = ["verifiedClaims", "forbiddenClaims", "targetIndustries", "targetBusinessTypes", "targetLocations", "targetKeywords", "positiveSignals", "negativeSignals", "exclusions", "exampleMessages", "unverifiedClaims", "affiliateTopics"] as const;
 
 function decode(row: typeof businessProfiles.$inferSelect): BusinessProfile {
   const parsed = Object.fromEntries(jsonFields.map((field) => [field, JSON.parse(row[field]) as string[]]));
@@ -31,6 +31,7 @@ export function saveBusinessProfile(database: AppDatabase, input: BusinessProfil
     targetLocations: JSON.stringify(value.targetLocations), targetKeywords: JSON.stringify(value.targetKeywords),
     positiveSignals: JSON.stringify(value.positiveSignals), negativeSignals: JSON.stringify(value.negativeSignals),
     exclusions: JSON.stringify(value.exclusions), exampleMessages: JSON.stringify(value.exampleMessages),
+    unverifiedClaims: JSON.stringify(value.unverifiedClaims), affiliateTopics: JSON.stringify(value.affiliateTopics),
   };
   database.insert(businessProfiles).values({ ...stored, id: profileId, createdAt: now, updatedAt: now })
     .onConflictDoUpdate({ target: businessProfiles.id, set: { ...stored, updatedAt: now } }).run();

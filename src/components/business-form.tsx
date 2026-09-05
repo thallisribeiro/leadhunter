@@ -36,6 +36,17 @@ export function BusinessForm({ profile }: { profile?: BusinessProfile | null }) 
       <Field label="Idioma"><Input name="outreachLanguage" defaultValue={profile?.outreachLanguage ?? "pt-BR"} required /></Field>
       <Field label="Mensagens de exemplo"><Textarea name="exampleMessages" defaultValue={joined(profile?.exampleMessages)} /></Field>
       <Field label="Instruções adicionais"><Textarea name="additionalInstructions" defaultValue={profile?.additionalInstructions ?? ""} /></Field>
+      <Field label="Seu nome" hint="Quem assina as conversas."><Input name="ownerName" defaultValue={profile?.ownerName ?? ""} /></Field>
+      <Field label="Seu cargo"><Input name="ownerRole" defaultValue={profile?.ownerRole ?? ""} placeholder="Fundador" /></Field>
+      <Field label="Instagram da empresa"><Input name="instagramHandle" defaultValue={profile?.instagramHandle ?? ""} placeholder="@suaempresa" /></Field>
+      <Field label="Link do WhatsApp" hint="Para onde o lead interessado é encaminhado."><Input name="whatsappLink" type="url" defaultValue={profile?.whatsappLink ?? ""} placeholder="https://wa.me/55..." /></Field>
+      <Field label="Link do grupo de afiliados"><Input name="affiliateGroupLink" type="url" defaultValue={profile?.affiliateGroupLink ?? ""} placeholder="https://chat.whatsapp.com/..." /></Field>
+      <Field label="Como funciona" hint="Passos separados por |"><Input name="howItWorks" defaultValue={profile?.howItWorks ?? ""} placeholder="briefing | rascunho em 48h | ajustes" /></Field>
+      <Field label="Modelo de receita"><Input name="revenueModel" defaultValue={profile?.revenueModel ?? ""} /></Field>
+      <Field label="Jargão do mercado" hint="termo = significado"><Input name="marketJargon" defaultValue={profile?.marketJargon ?? ""} /></Field>
+      <Field label="Afirmações a comprovar" hint="Bloqueadas até virarem prova."><Textarea name="unverifiedClaims" defaultValue={joined(profile?.unverifiedClaims)} /></Field>
+      <Field label="Temas de afiliados" hint="Criadores que falam sobre isso."><Textarea name="affiliateTopics" defaultValue={joined(profile?.affiliateTopics)} /></Field>
+      <Field label="Geografia"><Input name="geography" defaultValue={profile?.geography ?? ""} placeholder="Brasil" /></Field>
     </div></section>
     <div className="form-submit"><p>Seus dados ficam somente neste computador.</p><button className="button button-primary" type="submit">Salvar e criar campanha <span>→</span></button></div>
   </form>;

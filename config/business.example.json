@@ -1,0 +1,20 @@
+{
+  "_comment": "Bloco CONFIGURAÇÃO do Buscando 1 Milhão. No LeadHunter estes campos vivem no banco (Configurações → Negócio); este arquivo é o espelho para quem prefere preencher por texto e colar no formulário. Nunca versionar o business.json real.",
+  "OWNER_NAME": "{{SEU_NOME}}",
+  "OWNER_ROLE": "{{SEU_CARGO}}",
+  "COMPANY_NAME": "{{NOME_DA_EMPRESA}}",
+  "COMPANY_WEBSITE": "{{SITE_DA_EMPRESA}}",
+  "INSTAGRAM_HANDLE": "{{@SEU_INSTAGRAM}}",
+  "WHATSAPP_LINK": "{{https://wa.me/55...}}",
+  "AFFILIATE_GROUP_LINK": "{{link do grupo de afiliados}}",
+  "ONE_LINE_PITCH": "{{o que a empresa resolve, em uma frase}}",
+  "HOW_IT_WORKS": "{{passo 1}} | {{passo 2}} | {{passo 3}}",
+  "REVENUE_MODEL": "{{como a empresa ganha dinheiro}}",
+  "MARKET_JARGON": "{{termo do nicho}} = {{o que significa}}",
+  "VERIFIED_CLAIMS": ["{{afirmação já comprovada}}"],
+  "UNVERIFIED_CLAIMS": ["{{afirmação a comprovar — bloqueada até virar prova}}"],
+  "ICP_SEGMENTS": ["{{segmento 1}}", "{{segmento 2}}"],
+  "ICP_KEYWORDS": ["{{palavra 1}}", "{{palavra 2}}"],
+  "AFFILIATE_TOPICS": ["{{tema 1}}", "{{tema 2}}"],
+  "GEOGRAPHY": "{{região}}"
+}
