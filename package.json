@@ -14,10 +14,14 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
+    "pretest:e2e": "pnpm build",
     "test:e2e": "playwright test",
+    "dev:e2e": "tsx src/testing/e2e-server.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx src/db/migrate.ts",
-    "db:seed": "tsx src/db/seed.ts"
+    "db:seed": "tsx src/db/seed.ts",
+    "db:backup": "tsx src/db/backup.ts",
+    "smoke:real": "tsx src/testing/real-source-smoke.ts"
   },
   "dependencies": {
     "better-sqlite3": "^13.0.3",

@@ -1,242 +1,75 @@
-<div align="center">
+# LeadHunter Local
 
-# 🚀 Buscando 1 Milhão
+Aplicação local de prospecção B2B que transforma um perfil de cliente ideal em uma lista operacional de leads deduplicados, enriquecidos, pontuados e acompanhados por evidências.
 
-### Um prompt. Um sistema comercial autônomo. Construído em público.
+O produto roda em uma única máquina com Next.js, TypeScript e SQLite. Integrações externas são opcionais: CSV, URLs iniciais e OpenStreetMap/Overpass funcionam sem conta paga; IA, Google Places e SMTP só são usados quando configurados.
 
-<br/>
+## O que está incluído
 
-![Status](https://img.shields.io/badge/status-em%20construção-FFB000?style=for-the-badge&labelColor=0D1117)
-![Meta](https://img.shields.io/badge/meta-R$%201.000.000-00C853?style=for-the-badge&labelColor=0D1117)
-![Build in Public](https://img.shields.io/badge/build-in%20public-E1306C?style=for-the-badge&logo=instagram&logoColor=white&labelColor=0D1117)
+- onboarding completo do negócio e do ICP;
+- campanhas por segmento, região, sinais e score mínimo;
+- descoberta por CSV, URLs iniciais, Overpass e Google Places opcional;
+- deduplicação por domínio, email, telefone, URL canônica e nome/local;
+- crawler limitado com proteção contra SSRF e registro das fontes;
+- extração de contatos, sinais e evidências citáveis;
+- score determinístico de 0–100 e confiança separada;
+- drafts personalizados que só usam evidências e claims verificados;
+- shortlist, ações em massa e pipeline manual;
+- email em dry-run por padrão, aprovação e suppression global;
+- jobs duráveis em SQLite, métricas e exportação CSV;
+- fixture reproduzível com 20 clínicas fictícias de Miami.
 
-<br/>
+## Início rápido
 
-![Next.js](https://img.shields.io/badge/Next.js-000000?style=flat-square&logo=nextdotjs&logoColor=white)
-![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)
-![Tailwind](https://img.shields.io/badge/Tailwind-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)
-![SQLite](https://img.shields.io/badge/SQLite-003B57?style=flat-square&logo=sqlite&logoColor=white)
-![Drizzle](https://img.shields.io/badge/Drizzle-C5F74F?style=flat-square&logo=drizzle&logoColor=black)
-![OpenAI](https://img.shields.io/badge/OpenAI-412991?style=flat-square&logo=openai&logoColor=white)
-![Playwright](https://img.shields.io/badge/Playwright-2EAD33?style=flat-square&logo=playwright&logoColor=white)
-
-<br/>
-
-## ⬇️ [**PROMPT.md**](PROMPT.md) ⬇️
-
-**É esse arquivo. Preenche, cola no Codex, pronto.**
-
-<br/>
-
-**[O que é](#-o-que-é) · [Como funciona](#-como-funciona) · [Como usar](#-como-usar) · [Setup](#-setup-da-sua-máquina) · [Regras](#-regras-que-não-se-negocia)**
-
-</div>
-
----
-
-## 🎯 O que é
-
-Um agente de IA que prospecta pelo Instagram sozinho: acha o lead, qualifica, escreve a primeira mensagem, entende a resposta, conduz a conversa, encaminha pro WhatsApp e **aprende com o que converteu** — ajustando público, texto, horário e cadência sem ninguém mandar.
-
-Roda 100% local. Seu banco, sua sessão, sua chave.
-
-```
-Observar → Decidir → Agir → Medir → Aprender → Adaptar
-```
-
-Aqui **não tem código pronto**. Tem o prompt que constrói o código. Você troca os `{{PLACEHOLDERS}}` pelo seu negócio, cola no Codex, e sai um sistema seu — não uma cópia do meu.
-
-<br/>
-
-## ⚙️ Como funciona
-
-```mermaid
-flowchart LR
-    A["🔎 Descoberta<br/>perfis do ICP"] --> B["🧠 Qualificação<br/>score + prioridade"]
-    B --> C["💬 1ª DM<br/>seu Chrome real"]
-    C --> D{"Respondeu?"}
-    D -- não --> E["⏰ Follow-up<br/>agendado"]
-    E --> D
-    D -- sim --> F["📡 Webhook Meta<br/>handoff de canal"]
-    F --> G["🤖 Conversa<br/>API oficial + OpenAI"]
-    G --> H["📱 WhatsApp<br/>ou grupo de afiliados"]
-    H --> I["📊 Métricas<br/>o que converteu?"]
-    I -.retroalimenta.-> A
-
-    style A fill:#1f2937,stroke:#E1306C,color:#fff
-    style C fill:#1f2937,stroke:#FFB000,color:#fff
-    style G fill:#1f2937,stroke:#412991,color:#fff
-    style H fill:#1f2937,stroke:#25D366,color:#fff
-    style I fill:#1f2937,stroke:#00C853,color:#fff
-```
-
-### Por que dois canais
-
-| Etapa | Canal | Motivo |
-|:--|:--|:--|
-| **Primeiro contato** | Seu Chrome, sua sessão | A API oficial da Meta **não abre** conversa com quem nunca te respondeu |
-| **Depois da resposta** | API oficial + webhook | É o caminho suportado, auditável e estável |
-
-Uma **trava de canal** garante que os dois nunca escrevam no mesmo fio. Depois do handoff, o navegador está proibido de responder.
-
-<br/>
-
-## 🚦 Como usar
-
-### `1` Preenche o bloco de configuração
-
-Abre o [**PROMPT.md**](PROMPT.md). No topo tem um bloco `CONFIGURAÇÃO` com uns 15 campos. Troca cada `{{PLACEHOLDER}}` pelo seu: nome, empresa, site, @ do Instagram, WhatsApp, oferta e quem é seu cliente ideal.
-
-Dois campos merecem atenção:
-
-- **`VERIFIED_CLAIMS`** — só o que você consegue provar hoje. É a única coisa que a IA pode afirmar pro lead.
-- **`UNVERIFIED_CLAIMS`** — o que você *quer* dizer mas ainda não comprovou. Fica bloqueado até virar prova.
-
-### `2` Cola no Codex
-
-Copia o arquivo inteiro, do começo ao fim, e cola numa task do Codex.
-
-> 💡 Codex cloud roda em container — ele **escreve** toda a camada de navegador e testa contra páginas simuladas, mas não alcança o seu Chrome. O prompt já diz isso pra ele, então ele entrega tudo e deixa o teste real documentado pra você rodar local.
-
-### `3` Roda na sua máquina
-
-Clona o que ele gerou, faz o [setup abaixo](#-setup-da-sua-máquina), e sobe:
+Requer Node.js 24+ e pnpm 11+.
 
 ```bash
-pnpm install && pnpm dev
-```
-
-<br/>
-
-## 🔧 Setup da sua máquina
-
-<details>
-<summary><b>🔑 Chave da OpenAI</b></summary>
-
-<br/>
-
-1. **https://platform.openai.com/api-keys** → login.
-2. **Settings → Billing**: adiciona crédito. Sem crédito, dá `429 insufficient_quota`.
-3. **Settings → Limits**: define um **hard limit** mensal (ex. `USD 50`). Esse é o freio real se o agente entrar em loop.
-4. **Create new secret key** → projeto **separado** (não usa o `Default`) → permissão `Restricted`, só `Model capabilities: Write`.
-5. Copia a chave **agora**, ela só aparece uma vez.
-
-```bash
+pnpm install
 cp .env.example .env
-# cola em OPENAI_API_KEY=sk-proj-...
+pnpm db:migrate
+pnpm dev
 ```
 
-O `.env` já está no `.gitignore`. Nunca commita, nunca aparece em print ou vídeo.
+Abra `http://localhost:3000`. O comando `pnpm dev` inicia o app e o worker juntos.
 
-**Vazou?** Revoga em `platform.openai.com/api-keys` e gera outra. Revogar resolve — reescrever o histórico do Git é secundário.
-
-</details>
-
-<details>
-<summary><b>🌐 Sessão do Instagram no seu Chrome</b></summary>
-
-<br/>
-
-Perfil **dedicado**, separado do seu pessoal. Isso resolve três coisas de uma vez: o agente nunca vê suas abas, seu Chrome normal continua livre, e o Chrome 136+ recusa debug no perfil padrão de qualquer jeito.
-
-**macOS**
+Para carregar a demonstração local:
 
 ```bash
-/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome \
-  --remote-debugging-port=9222 \
-  --remote-debugging-address=127.0.0.1 \
-  --user-data-dir="$PWD/.chrome-profile"
+pnpm db:seed
 ```
 
-**Linux**
+## Segurança por padrão
 
-```bash
-google-chrome --remote-debugging-port=9222 --user-data-dir="$PWD/.chrome-profile"
-```
+- `EMAIL_SENDING_ENABLED=false`: toda tentativa permanece como dry-run persistido.
+- Nenhuma credencial é necessária para iniciar ou executar os testes.
+- Claims do lead precisam apontar para evidências salvas; claims do negócio vêm apenas do onboarding.
+- O crawler aceita somente HTTP(S), bloqueia redes privadas/metadata e limita páginas, tamanho, redirects e tempo.
+- Pedidos de não contato criam suppression global.
+- O orçamento mensal configurado bloqueia novas chamadas de IA quando atingido.
 
-**Windows (PowerShell)**
+## Comandos
 
-```powershell
-& "C:\Program Files\Google\Chrome\Application\chrome.exe" `
-  --remote-debugging-port=9222 `
-  --user-data-dir="$PWD\.chrome-profile"
-```
+| Comando | Função |
+|---|---|
+| `pnpm dev` | Inicia web e worker em desenvolvimento |
+| `pnpm build` | Gera o build de produção |
+| `pnpm start` | Inicia web e worker em produção |
+| `pnpm db:migrate` | Aplica as migrations SQLite |
+| `pnpm db:seed` | Cria/atualiza a demo idempotente de 20 leads |
+| `pnpm db:backup` | Cria uma cópia consistente em `backups/` |
+| `pnpm test` | Executa testes unitários e de integração |
+| `pnpm test:e2e` | Gera o build e executa o fluxo Playwright completo |
+| `pnpm smoke:real` | Testa Overpass e uma URL pública, com rede real |
+| `pnpm lint` | Valida o código com ESLint |
+| `pnpm typecheck` | Valida TypeScript estrito |
 
-Nessa janela que abriu, entra no `instagram.com`, loga normal, resolve o 2FA. A sessão fica salva e sobrevive a reinício.
+## Documentação
 
-Testa:
+- [Instalação, operação, email e troubleshooting](SETUP.md)
+- [Especificação do MVP](docs/superpowers/specs/2026-09-05-leadhunter-local-design.md)
+- [Plano executado etapa por etapa](docs/superpowers/plans/2026-09-05-leadhunter-local.md)
+- [Prompt histórico do Buscando 1 Milhão](docs/reference/buscandomilhao.md)
 
-```bash
-curl -s http://127.0.0.1:9222/json/version
-```
+## Arquitetura
 
-> ⚠️ **Segurança:** essa porta dá controle total sobre a sessão logada nesse perfil. Mantém em `127.0.0.1`, nunca `0.0.0.0`, e não roda em máquina compartilhada. O `.chrome-profile/` guarda seus cookies do Instagram — já está no `.gitignore` e não sai da sua máquina.
-
-</details>
-
-<br/>
-
-## 🛡️ Regras que não se negocia
-
-<details>
-<summary><b>Como o agente não queima a conta</b></summary>
-
-<br/>
-
-| Controle | Padrão |
-|:--|:--|
-| DMs por dia | 30, com aquecimento gradual |
-| Intervalo entre DMs | 90–240s aleatório |
-| Janela de operação | 09:00–20:00, fuso configurável |
-| Circuit breaker | Pausa tudo em erro anormal, restrição ou opt-out em alta |
-
-Ritmo humano existe por **saúde da conta** — mesma disciplina de um SDR de verdade. Não tem fingerprint forjado, API privada nem tentativa de burlar bloqueio.
-
-</details>
-
-<details>
-<summary><b>Como o agente não mente</b></summary>
-
-<br/>
-
-A IA só pode afirmar o que está em `VERIFIED_CLAIMS`. Qualquer coisa em `UNVERIFIED_CLAIMS` fica bloqueada até virar prova.
-
-Ela nunca inventa taxa, condição, garantia ou superlativo, nunca promete aprovação de conta, e nunca finge ser cliente pra arrancar resposta.
-
-</details>
-
-<details>
-<summary><b>Como o agente respeita quem não quer</b></summary>
-
-<br/>
-
-Pedido de parar é atendido na hora. O perfil entra em `do_not_contact` — permanente, sem follow-up, sem reentrada por outra campanha, por nenhum canal.
-
-</details>
-
-<details>
-<summary><b>Como o custo não explode</b></summary>
-
-<br/>
-
-Toda chamada à OpenAI grava tokens e custo. Ao bater `OPENAI_MONTHLY_BUDGET_USD`, o sistema pausa sozinho.
-
-O painel mostra **custo por lead** e **custo por cliente ativo** — sem isso não dá pra saber se a automação dá lucro.
-
-</details>
-
-<br/>
-
----
-
-<div align="center">
-
-**Este repositório é público de propósito.**
-
-Pega o [PROMPT.md](PROMPT.md), troca os `{{PLACEHOLDERS}}`, e constrói o seu.
-
-<br/>
-
-⭐ Se isso te ajudou, deixa uma estrela e acompanha a jornada.
-
-</div>
+O sistema é um monólito modular: `src/app` contém a interface e endpoints; `src/features` concentra regras de negócio; `src/integrations` isola serviços externos; `src/db` mantém schema, migrations, fixtures e utilitários; `src/worker` processa a fila durável. SQLite é a fonte de verdade para dados de negócio, jobs, eventos e custos de IA.

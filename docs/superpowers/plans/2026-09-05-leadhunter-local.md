@@ -151,10 +151,10 @@
 - Consumes all product flows and commands from Tasks 1–7.
 - Produces a reproducible 20-lead demo, full browser acceptance proof, operator setup/runbook, and preserved historical prompt.
 
-- [ ] Write the Playwright scenario for onboarding, a Miami dental campaign, importing 20 fictitious companies, dedupe, mock enrichment, ranking, selection, draft generation, dry-run, export, and manual result update.
-- [ ] Run it against the unfinished fixture flow and confirm the expected failure.
-- [ ] Add deterministic fixtures/seed commands, finish browser-accessible actions, and configure one-command web+worker development.
-- [ ] Run `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm build`, and `pnpm test:e2e`; all must exit 0 with clean output.
-- [ ] Run a bounded Overpass request and one public seed-URL enrichment; persist/report the exact result without making automated tests network-dependent.
-- [ ] Rewrite README for LeadHunter, write PT-BR setup/backup/troubleshooting instructions, preserve `PROMPT.md` at `docs/reference/buscandomilhao.md`, and document only credentials required for optional real integrations.
-- [ ] Commit as `feat: complete LeadHunter local MVP`.
+- [x] Write the Playwright scenario for onboarding, a Miami dental campaign, importing 20 fictitious companies, dedupe, mock enrichment, ranking, selection, draft generation, dry-run, export, and manual result update.
+- [x] Run it against the unfinished fixture flow and confirm the expected failure.
+- [x] Add deterministic fixtures/seed commands, finish browser-accessible actions, and configure one-command web+worker development.
+- [x] Run `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm build`, and `pnpm test:e2e`; all must exit 0 with clean output.
+- [x] Run a bounded Overpass request and one public seed-URL enrichment; persist/report the exact result without making automated tests network-dependent.
+- [x] Rewrite README for LeadHunter, write PT-BR setup/backup/troubleshooting instructions, preserve `PROMPT.md` at `docs/reference/buscandomilhao.md`, and document only credentials required for optional real integrations.
+- [x] Commit as `feat: complete LeadHunter local MVP`.

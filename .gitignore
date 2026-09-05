@@ -29,6 +29,8 @@ out/
 logs/
 screenshots/
 traces/
+test-results/
+playwright-report/
 
 # os
 .DS_Store

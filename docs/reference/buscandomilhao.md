@@ -1,4 +1,5 @@
 <!--
+  Referência histórica preservada do projeto Buscando 1 Milhão.
   PROMPT ÚNICO — copie TUDO abaixo da linha e cole no Codex.
   Antes de colar, preencha o bloco CONFIGURAÇÃO. Só isso.
 -->

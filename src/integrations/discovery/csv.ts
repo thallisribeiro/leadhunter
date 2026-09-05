@@ -1,6 +1,7 @@
 import type { DiscoveredLead, LeadDiscoveryProvider } from "@/features/discovery/types";
 
-type LeadField = "companyName" | "website" | "email" | "phone" | "city" | "country" | "instagram" | "linkedin" | "sourceUrl";
+export const leadFields = ["companyName", "website", "email", "phone", "city", "country", "instagram", "linkedin", "sourceUrl"] as const;
+export type LeadField = (typeof leadFields)[number];
 
 const aliases: Record<string, LeadField> = {
   companyname: "companyName", company: "companyName", empresa: "companyName", nome: "companyName",
@@ -27,6 +28,10 @@ function parseRows(csv: string): string[][] {
   }
   row.push(field.trim()); if (row.some(Boolean)) rows.push(row);
   return rows;
+}
+
+export function getCsvHeaders(csv: string): string[] {
+  return parseRows(csv.replace(/^\uFEFF/, ""))[0] ?? [];
 }
 
 export function parseLeadCsv(csv: string, mapping: Record<string, LeadField> = {}): DiscoveredLead[] {

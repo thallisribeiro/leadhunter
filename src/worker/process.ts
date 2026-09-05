@@ -1,6 +1,7 @@
 import { createWorker } from "@/worker/runner";
+import { jobHandlers } from "@/worker/handlers";
 
-const worker = createWorker({});
+const worker = createWorker(jobHandlers);
 worker.recover();
 
 async function tick() {
