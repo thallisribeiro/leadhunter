@@ -24,7 +24,7 @@ export function createDatabase(filename: string) {
 function databasePath(): string {
   const configured = process.env.DATABASE_URL ?? "file:./data/leadhunter.db";
   if (!configured.startsWith("file:")) throw new Error("DATABASE_URL must use the file: protocol");
-  return path.resolve(process.cwd(), configured.slice(5));
+  return path.resolve(/* turbopackIgnore: true */ process.cwd(), configured.slice(5));
 }
 
 const connection = createDatabase(databasePath());

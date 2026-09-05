@@ -1,0 +1,14 @@
+import { createCampaignAction } from "@/app/actions";
+import { Field, Input, PageHeader, Textarea } from "@/components/ui";
+
+export default function NewCampaignPage() {
+  return <><PageHeader eyebrow="Nova campanha" title="Quem você quer encontrar?" description="Comece específico. Uma lista curta e relevante vale mais do que milhares de contatos genéricos." />
+    <form action={createCampaignAction} className="stack-xl"><section className="form-section"><div className="section-copy"><span>01</span><h2>Recorte</h2><p>Mercado, região e objetivo desta busca.</p></div><div className="form-grid">
+      <Field label="Nome"><Input name="name" placeholder="Dentistas Miami" required /></Field><Field label="Quantidade"><Input name="targetLeadCount" type="number" min="1" max="5000" defaultValue="20" required /></Field>
+      <Field label="Objetivo"><Textarea name="description" placeholder="Encontrar clínicas com oportunidade de melhorar aquisição digital." /></Field><Field label="Localizações"><Textarea name="targetLocations" placeholder="Miami, Florida, USA" required /></Field>
+      <Field label="Segmentos"><Textarea name="industries" placeholder={'dentist\ndental clinic'} required /></Field><Field label="Palavras-chave"><Textarea name="keywords" placeholder="cosmetic dentistry" /></Field>
+    </div></section><section className="form-section"><div className="section-copy"><span>02</span><h2>Qualidade</h2><p>Sinais usados para priorizar e excluir.</p></div><div className="form-grid">
+      <Field label="Sinais obrigatórios"><Textarea name="requiredSignals" placeholder="site ativo" /></Field><Field label="Sinais preferidos"><Textarea name="preferredSignals" placeholder={'email comercial\nodontologia estética'} /></Field><Field label="Excluir quando"><Textarea name="excludedSignals" placeholder="permanently closed" /></Field><Field label="Score mínimo"><Input name="minimumScore" type="number" min="0" max="100" defaultValue="70" /></Field>
+    </div></section><section className="form-section"><div className="section-copy"><span>03</span><h2>Fontes</h2><p>Fontes independentes; uma falha não interrompe as demais.</p></div><div className="form-grid"><div className="field"><span>Ativar</span>{[["csv","Arquivo CSV"],["seed_urls","URLs iniciais"],["overpass","OpenStreetMap / Overpass"],["google_places","Google Places (requer chave)"]].map(([value,label]) => <label key={value} style={{fontWeight:500}}><input type="checkbox" name="sources" value={value} defaultChecked={value !== "google_places"} /> {label}</label>)}</div><Field label="Idioma da abordagem"><Input name="outreachLanguage" defaultValue="pt-BR" /></Field></div></section><div className="form-submit"><p>O envio real de email continuará desligado.</p><button className="button button-primary" type="submit">Criar campanha <span>→</span></button></div></form>
+  </>;
+}

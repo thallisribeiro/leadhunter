@@ -51,11 +51,11 @@
 - Consumes: `db` and tables from Task 1.
 - Produces: `businessProfileSchema`, `saveBusinessProfile(input)`, `campaignSchema`, `createCampaign(input)`, `updateCampaignStatus(id, status)`.
 
-- [ ] Write failing tests for first-run redirect state, complete profile persistence/editing, campaign validation, creation, and translated statuses.
-- [ ] Run the focused tests and confirm expected missing-module failures.
-- [ ] Implement validated actions and the PT-BR shell/onboarding/campaign screens with deliberate empty, validation, disabled-integration, and success states.
-- [ ] Run focused tests, lint, typecheck, and a production build.
-- [ ] Commit as `feat: add onboarding and campaigns`.
+- [x] Write failing tests for first-run redirect state, complete profile persistence/editing, campaign validation, creation, and translated statuses.
+- [x] Run the focused tests and confirm expected missing-module failures.
+- [x] Implement validated actions and the PT-BR shell/onboarding/campaign screens with deliberate empty, validation, disabled-integration, and success states.
+- [x] Run focused tests, lint, typecheck, and a production build.
+- [x] Commit as `feat: add onboarding and campaigns`.
 
 ### Task 3: Discovery providers and deduplication
 
