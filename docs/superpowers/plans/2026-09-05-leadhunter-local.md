@@ -85,11 +85,11 @@
 **Interfaces:**
 - Produces: `assertPublicHttpUrl(url)`, `extractBusinessData(html, sourceUrl)`, `enrichLead(leadId, fetcher)`, and evidence/contact persistence.
 
-- [ ] Write failing tests for protocol/DNS/private-network rejection, redirect revalidation, page/body/time bounds, contact/social/service extraction, “not detected” language, cache reuse, and evidence source linkage.
-- [ ] Run focused tests and confirm expected failures.
-- [ ] Implement the safe crawler, clean HTML extraction, bounded link selection, contact/evidence persistence, and lead detail screen.
-- [ ] Run focused tests, lint, typecheck, and build.
-- [ ] Commit as `feat: enrich leads with cited evidence`.
+- [x] Write failing tests for protocol/DNS/private-network rejection, redirect revalidation, page/body/time bounds, contact/social/service extraction, “not detected” language, cache reuse, and evidence source linkage.
+- [x] Run focused tests and confirm expected failures.
+- [x] Implement the safe crawler, clean HTML extraction, bounded link selection, contact/evidence persistence, and lead detail screen.
+- [x] Run focused tests, lint, typecheck, and build.
+- [x] Commit as `feat: enrich leads with cited evidence`.
 
 ### Task 5: Deterministic scoring and optional AI
 
