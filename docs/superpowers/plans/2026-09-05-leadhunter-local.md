@@ -118,11 +118,11 @@
 **Interfaces:**
 - Produces: `generateOutreachDraft(leadId, channel)`, `prepareEmailAttempt(input)`, `sendApprovedEmail(input)`, `suppress(input)`, `isSuppressed(lead)`, `exportCampaignCsv(id)`.
 
-- [ ] Write failing tests for evidence-bound personalization, forbidden-claim rejection, short PT-BR copy fallback, global suppression, default dry-run, disabled-real-send gate, approval, email syntax, daily limit, spacing, duplicate idempotency, and CSV escaping/content.
-- [ ] Run focused tests and confirm failures for missing functionality.
-- [ ] Implement drafts, suppression, dry-run-first email workflow, SMTP adapter, and streaming CSV export.
-- [ ] Run focused tests, lint, typecheck, and build.
-- [ ] Commit as `feat: add safe outreach and exports`.
+- [x] Write failing tests for evidence-bound personalization, forbidden-claim rejection, short PT-BR copy fallback, global suppression, default dry-run, disabled-real-send gate, approval, email syntax, daily limit, spacing, duplicate idempotency, and CSV escaping/content.
+- [x] Run focused tests and confirm failures for missing functionality.
+- [x] Implement drafts, suppression, dry-run-first email workflow, SMTP adapter, and streaming CSV export.
+- [x] Run focused tests, lint, typecheck, and build.
+- [x] Commit as `feat: add safe outreach and exports`.
 
 ### Task 7: CRM, bulk operations, dashboard, campaign center, and jobs UI
 

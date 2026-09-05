@@ -4,7 +4,7 @@ const textList = z.array(z.string().trim().min(1)).default([]);
 
 export const businessProfileSchema = z.object({
   businessName: z.string().trim().min(2),
-  website: z.union([z.url(), z.literal("")]).optional().transform((value) => value || null),
+  website: z.union([z.url(), z.literal(""), z.null()]).optional().transform((value) => value || null),
   businessDescription: z.string().trim().min(10),
   offer: z.string().trim().min(3),
   oneLinePitch: z.string().trim().min(5),
