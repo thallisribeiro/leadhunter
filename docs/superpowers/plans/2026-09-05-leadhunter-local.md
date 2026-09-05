@@ -134,11 +134,11 @@
 **Interfaces:**
 - Produces: `listLeads(filters, sort, page)`, `applyBulkAction(input)`, `getDashboardMetrics()`, `getCampaignOperations(id)`, and manual pipeline transitions.
 
-- [ ] Write failing tests for every requested filter/sort, pagination, shortlist/draft/dry-run/suppression bulk operations, valid manual status transitions, metric definitions, campaign counts, source ranking, recent errors, and running jobs.
-- [ ] Run focused tests and confirm failures.
-- [ ] Implement dense PT-BR tables and operational pages using server rendering and progressive enhancement; include all requested columns, actions, and states.
-- [ ] Run focused tests, lint, typecheck, and build.
-- [ ] Commit as `feat: add lead operations workspace`.
+- [x] Write failing tests for every requested filter/sort, pagination, shortlist/draft/dry-run/suppression bulk operations, valid manual status transitions, metric definitions, campaign counts, source ranking, recent errors, and running jobs.
+- [x] Run focused tests and confirm failures.
+- [x] Implement dense PT-BR tables and operational pages using server rendering and progressive enhancement; include all requested columns, actions, and states.
+- [x] Run focused tests, lint, typecheck, and build.
+- [x] Commit as `feat: add lead operations workspace`.
 
 ### Task 8: Fixtures, end-to-end proof, real-source smoke test, and documentation
 

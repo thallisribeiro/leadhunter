@@ -2,6 +2,7 @@ import { desc, eq } from "drizzle-orm";
 import type { AppDatabase } from "@/db/client";
 import { campaigns } from "@/db/schema";
 import { campaignSchema, campaignStatuses, type Campaign, type CampaignInput, type CampaignStatus } from "@/features/campaigns/schema";
+export type { CampaignStatus } from "@/features/campaigns/schema";
 
 export const campaignStatusLabels: Record<CampaignStatus, string> = {
   draft: "Rascunho", discovering: "Buscando", enriching: "Enriquecendo", scoring: "Pontuando",
