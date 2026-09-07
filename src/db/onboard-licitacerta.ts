@@ -29,7 +29,7 @@ saveBusinessProfile(db, {
   businessName: "LicitaCerta",
   website: "https://licitacerta.com.br",
   businessDescription: "Radar de licitações para fornecedores do governo. Lê o PNCP todo dia útil, item por item (material e serviço), cruza com o ramo da empresa (CNAE descoberto na Receita a partir do CNPJ) e avisa no WhatsApp só as licitações compatíveis: órgão, valor, prazo, itens e exigências. Sem painel para aprender, sem cadastro em portal. Porta de entrada: relatório retrovisor por CNPJ, sem login, mostrando o que a empresa venceu e o que deixou passar em jun–jul/2026.",
-  offer: "Assinatura R$ 49/mês, preço travado para quem entra agora, sem fidelidade (cancela por WhatsApp). Relatório gratuito do CNPJ sem cadastro. O site não dá trial; 3 dias grátis existem só pelo link de convite da prospecção.",
+  offer: "Assinatura R$ 49/mês, preço travado para quem entra agora, sem fidelidade (cancela por WhatsApp). Relatório gratuito do CNPJ sem cadastro. Todo cadastro recebe 3 radares grátis (3 dias COM alerta entregue, não 3 dias corridos) — mas isso NÃO é anunciado no site nem na abordagem: é surpresa no primeiro WhatsApp (decisão 07/09/2026).",
   oneLinePitch: "Só as licitações que valem o seu tempo, no WhatsApp, todo dia útil.",
   averageTicket: 49,
   salesGoal: "1 assinatura paga por autoatendimento até 16/09/2026; indicador que antecede: 10 cadastros no site. Canal frio = WhatsApp em número dedicado (não o de alertas), até 25/dia, cada mensagem sobre uma licitação aberta hoje que casa com o CNAE (disparar.js). E-mail frio: OFF (decisão 05/09/2026, não converte no Brasil). Kill: 100 disparos sem pagante → parar e revisar.",
@@ -46,7 +46,7 @@ saveBusinessProfile(db, {
   forbiddenClaims: [
     "Cobre todos os portais ou diários municipais (a fonte é só o PNCP)",
     "Garante ganhar licitação",
-    "Teste grátis ou trial pelo site (não existe; 3 dias só por convite)",
+    "Prometer teste grátis, trial ou 'radares grátis' (existem 3 entregas grátis, mas é surpresa: nunca vai na abordagem nem no site)",
     "Histórico de preço vencedor por item ou órgão (LicitaGov tem, nós não)",
     "Robô de lances, envio de proposta ou gestão de documentos",
     "Mais barato que os concorrentes (Alerta Licitação cobra R$ 44,90)",

@@ -1,6 +1,6 @@
 // In-memory Instagram for tests, fixture mode and dry-runs without a Chrome session.
 import { classifyRole, profileSignals, type InstagramProfile } from "@/integrations/browser/parse";
-import type { DiscoveredProfile, DmOptions, InstagramBrowser } from "@/integrations/browser/instagram";
+import type { AuthorMatch, DiscoveredProfile, DmOptions, InstagramBrowser } from "@/integrations/browser/instagram";
 
 export function createFakeInstagramBrowser(seed: { profiles?: InstagramProfile[]; searches?: Record<string, string[]>; hashtags?: Record<string, string[]>; failSend?: (handle: string) => Error | null } = {}): InstagramBrowser & { sent: Array<{ handle: string; text: string; dryRun: boolean }> } {
   const profiles = new Map((seed.profiles ?? []).map((p) => [p.handle, p]));
@@ -11,8 +11,8 @@ export function createFakeInstagramBrowser(seed: { profiles?: InstagramProfile[]
       const profile = profiles.get(handle.toLowerCase()); if (!profile) return null;
       return { ...profile, decisionRole: classifyRole(profile), signals: profileSignals(profile) };
     },
-    async searchAccounts(query, limit) { return (seed.searches?.[query] ?? []).slice(0, limit); },
-    async hashtagAuthors(tag, limit) { return (seed.hashtags?.[tag.replace(/^#/, "")] ?? []).slice(0, limit); },
+    async searchAccounts(query, limit): Promise<AuthorMatch[]> { return (seed.searches?.[query] ?? []).slice(0, limit).map((handle) => ({ handle })); },
+    async hashtagAuthors(tag, limit): Promise<AuthorMatch[]> { return (seed.hashtags?.[tag.replace(/^#/, "")] ?? []).slice(0, limit).map((handle) => ({ handle })); },
     async sendDirectMessage(handle, text, options: DmOptions) {
       const failure = seed.failSend?.(handle); if (failure) throw failure;
       sent.push({ handle, text, dryRun: options.dryRun });

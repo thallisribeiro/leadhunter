@@ -12,10 +12,12 @@ export function createInstagramProvider(browser: InstagramBrowser, options: { pe
     for (const industry of input.industries) for (const location of input.locations.length ? input.locations : [""]) queries.add(`${industry} ${location.split(",")[0] ?? ""}`.trim());
     const seen = new Set<string>();
     let yielded = 0;
-    const handles: string[] = [];
-    for (const query of queries) { for (const handle of await browser.searchAccounts(query, perQuery)) if (!seen.has(handle)) { seen.add(handle); handles.push(handle); } if (handles.length >= input.limit) break; }
-    for (const tag of input.hashtags ?? []) { if (handles.length >= input.limit) break; for (const handle of await browser.hashtagAuthors(tag, perQuery)) if (!seen.has(handle)) { seen.add(handle); handles.push(handle); } }
-    for (const handle of handles) {
+    // Legenda do post vai junto do handle (não é jogada fora depois de achar o autor): é o que
+    // deixa quem pontua o lead rejeitar pelo que o post realmente diz, não só pela bio do perfil.
+    const captionByHandle = new Map<string, string | undefined>();
+    for (const query of queries) { for (const match of await browser.searchAccounts(query, perQuery)) if (!seen.has(match.handle)) { seen.add(match.handle); captionByHandle.set(match.handle, match.caption); } if (captionByHandle.size >= input.limit) break; }
+    for (const tag of input.hashtags ?? []) { if (captionByHandle.size >= input.limit) break; for (const match of await browser.hashtagAuthors(tag, perQuery)) if (!seen.has(match.handle)) { seen.add(match.handle); captionByHandle.set(match.handle, match.caption); } }
+    for (const [handle, postCaption] of captionByHandle) {
       if (yielded >= input.limit) break;
       const profile = await browser.openProfile(handle);
       if (!profile) continue;
@@ -26,7 +28,7 @@ export function createInstagramProvider(browser: InstagramBrowser, options: { pe
         website: profile.externalUrl ?? undefined,
         sourceUrl: profile.url,
         externalId: profile.handle,
-        raw: { profile: { handle: profile.handle, name: profile.name, bio: profile.bio, followers: profile.followers, following: profile.following, posts: profile.posts, externalUrl: profile.externalUrl }, decisionRole: profile.decisionRole, signals: profile.signals },
+        raw: { profile: { handle: profile.handle, name: profile.name, bio: profile.bio, followers: profile.followers, following: profile.following, posts: profile.posts, externalUrl: profile.externalUrl }, decisionRole: profile.decisionRole, signals: profile.signals, postCaption },
       } satisfies DiscoveredLead;
       if (pause) await new Promise((resolve) => setTimeout(resolve, pause + Math.random() * pause));
     }

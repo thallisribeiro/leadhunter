@@ -61,6 +61,10 @@ function attachInstagram(database: AppDatabase, leadId: string, handle: string, 
   sqlite.prepare("UPDATE leads SET profile = ?, decision_role = COALESCE(?, decision_role), description = COALESCE(description, ?), updated_at = ? WHERE id = ?").run(JSON.stringify(profile), role, profile.bio || null, now, leadId);
   sqlite.prepare("DELETE FROM lead_evidence WHERE lead_id = ? AND type = 'instagram_bio'").run(leadId);
   if (profile.bio) sqlite.prepare("INSERT INTO lead_evidence (id, lead_id, type, value, source_url, source_provider, captured_at, metadata) VALUES (?, ?, 'instagram_bio', ?, ?, 'instagram', ?, ?)").run(crypto.randomUUID(), leadId, profile.bio.slice(0, 500), url, now, JSON.stringify({ followers: profile.followers ?? null }));
+  // A legenda do post que trouxe este handle (achado real, 06/09/2026): sem isso, a pontuação
+  // só via a bio do perfil e um post de concorrente ("assessoria em licitação") passava batido.
+  const postCaption = typeof lead.raw?.postCaption === "string" ? lead.raw.postCaption : null;
+  if (postCaption) sqlite.prepare("INSERT OR IGNORE INTO lead_evidence (id, lead_id, type, value, source_url, source_provider, captured_at, metadata) VALUES (?, ?, 'instagram_post', ?, ?, 'instagram', ?, '{}')").run(crypto.randomUUID(), leadId, postCaption.slice(0, 1_000), lead.sourceUrl, now);
   for (const signal of Array.isArray(lead.raw?.signals) ? (lead.raw.signals as string[]) : []) {
     if (!sqlite.prepare("SELECT 1 FROM lead_evidence WHERE lead_id = ? AND type = 'signal' AND value = ?").get(leadId, signal)) sqlite.prepare("INSERT INTO lead_evidence (id, lead_id, type, value, source_url, source_provider, captured_at, metadata) VALUES (?, ?, 'signal', ?, ?, 'instagram', ?, '{}')").run(crypto.randomUUID(), leadId, signal, url, now);
   }
@@ -70,13 +74,20 @@ export async function discoverWithProviders(database: AppDatabase, campaignId: s
   const results: Array<{ provider: string; count: number; error?: string }> = [];
   for (const provider of providers) {
     let count = 0;
+    let lastError: string | undefined;
     try {
       for await (const lead of provider.discover(input)) {
-        upsertDiscoveredLead(database, campaignId, lead, provider.name);
-        count += 1;
+        // Um lead com erro (achado real, 06/09: violação de UNIQUE numa evidência) não pode
+        // derrubar os outros N já achados na mesma rodada — só ele fica de fora.
+        try {
+          upsertDiscoveredLead(database, campaignId, lead, provider.name);
+          count += 1;
+        } catch (error) {
+          lastError = error instanceof Error ? error.message : "Unknown lead error";
+        }
         if (count >= input.limit) break;
       }
-      results.push({ provider: provider.name, count });
+      results.push({ provider: provider.name, count, ...(lastError ? { error: lastError } : {}) });
     } catch (error) {
       results.push({ provider: provider.name, count, error: error instanceof Error ? error.message : "Unknown provider error" });
     }
