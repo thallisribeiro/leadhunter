@@ -73,8 +73,10 @@ export function extractHook(transcript?: string | null, caption?: string | null)
 // oferta, sinais) aparecem no texto da peça. Sem IA — a nota tem que ser a mesma toda vez, e o
 // motivo tem que ser legível ("bateu: licitação, pregão, cnpj").
 export function scoreFit(text: string, keywords: string[]): { fit: number; reason: string | null } {
-  const alvo = text.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
-  const limpas = [...new Set(keywords.map((k) => k.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").trim()).filter((k) => k.length >= 4))];
+  // @menção não é tema: "Siga @pedraodalicitacao" casava com "licitação" e entrava como conteúdo do
+  // nicho sem dizer nada. Hashtag fica (#licitacao é tema de verdade).
+  const alvo = semAcento(String(text).replace(/@[\w.]+/g, " "));
+  const limpas = [...new Set(keywords.map(semAcento).filter((k) => k.length >= 4 && !GENERICAS.has(k)))];
   if (!limpas.length || !alvo.trim()) return { fit: 0, reason: null };
   const bateram = limpas.filter((k) => alvo.includes(k));
   if (!bateram.length) return { fit: 0, reason: null };
@@ -83,14 +85,28 @@ export function scoreFit(text: string, keywords: string[]): { fit: number; reaso
   return { fit, reason: `bateu: ${bateram.slice(0, 6).join(", ")}` };
 }
 
+// Palavra genérica não diz nada sobre tema: "valor" e "serviços" saem da descrição do negócio e
+// casavam com qualquer Reel de empreendedorismo (07/09/2026 — a biblioteca encheu de motivacional).
+const GENERICAS = new Set([
+  "valor", "valores", "servico", "servicos", "produto", "produtos", "cliente", "clientes", "empresa", "empresas",
+  "negocio", "negocios", "mercado", "vendas", "venda", "vender", "dinheiro", "faturamento", "lucro", "renda",
+  "assinatura", "plano", "preco", "precos", "mes", "mensal", "gratis", "teste", "acesso", "sistema", "plataforma",
+  "whatsapp", "email", "site", "link", "conteudo", "pessoa", "pessoas", "tempo", "ramo", "geral", "outros", "comercio",
+]);
+
+const semAcento = (s: string) => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").trim();
+
+// Só campos que descrevem TEMA (segmentos, palavras-chave, sinais, jargão, tópicos de afiliado).
+// Descrição e oferta ficam de fora de propósito: são prosa, e prosa vira ruído no casamento.
 export function profileKeywords(database: AppDatabase): string[] {
   const profile = getBusinessProfile(database);
   if (!profile) return [];
   const partes = [
-    ...(profile.targetIndustries ?? []), ...(profile.targetKeywords ?? []), ...(profile.positiveSignals ?? []),
-    ...(profile.affiliateTopics ?? []), profile.marketJargon ?? "", profile.offer ?? "", profile.businessDescription ?? "",
+    ...(profile.targetIndustries ?? []), ...(profile.targetKeywords ?? []),
+    ...(profile.positiveSignals ?? []), ...(profile.affiliateTopics ?? []), profile.marketJargon ?? "",
   ];
-  return partes.flatMap((parte) => String(parte).split(/[,;/]|\s{2,}|\n/)).map((p) => p.trim()).filter((p) => p.length >= 4).slice(0, 60);
+  const termos = partes.flatMap((parte) => String(parte).split(/[,;/|]|\s{2,}|\n/)).map((p) => p.trim()).filter(Boolean);
+  return [...new Set(termos.filter((t) => t.length >= 4 && !GENERICAS.has(semAcento(t))))].slice(0, 60);
 }
 
 export function upsertContentPiece(database: AppDatabase, input: ContentPieceInput, keywords?: string[]) {

@@ -75,7 +75,8 @@ describe("biblioteca de conteúdo", () => {
     expect(listContentPieces(db, { handle: "@A" })).toHaveLength(1);
     expect(listContentPieces(db, { minViews: 1000 })).toHaveLength(1);
     expect(listContentPieces(db, { starred: true })).toHaveLength(1);
-    expect(listContentPieces(db, { search: "cenoura" })).toHaveLength(1);
+    expect(listContentPieces(db, { search: "cenoura" })).toHaveLength(0); // fora do tema fica escondido por padrão
+    expect(listContentPieces(db, { search: "cenoura", incluirForaDoTema: true })).toHaveLength(1);
     expect(listContentPieces(db, { minFit: 50 }).map((p) => p.id)).toEqual([bom.id]);
     const stats = contentLibraryStats(db);
     expect(stats).toMatchObject({ pieces: 2, accounts: 2, starred: 1, transcribed: 1, best_views: 9000 });
@@ -93,5 +94,50 @@ describe("campos vindos da raspagem", () => {
     const peca = upsertContentPiece(db, { handle: "conta", externalId: "z", url: "u/z", views: "9.100" as unknown as number, caption: ["a", "b"] as unknown as string });
     expect(getContentPiece(db, peca.id)!.views).toBe(9100);
     expect(getContentPiece(db, peca.id)!.caption).toBe("a · b");
+  });
+});
+
+// 07/09/2026: a biblioteca encheu de unboxing e motivacional. Duas causas: o perfil sem palavras do
+// nicho, e o score usando prosa da descrição ("valor", "serviços") como se fosse tema.
+describe("só conteúdo do tema", () => {
+  it("@menção não vale como tema: 'Siga @pedraodalicitacao' não é conteúdo sobre licitação", () => {
+    expect(scoreFit("Siga @pedraodalicitacao", ["licitação"])).toEqual({ fit: 0, reason: null });
+    expect(scoreFit("Siga @pedraodalicitacao #licitacao", ["licitação"]).fit).toBeGreaterThan(0);
+  });
+
+  it("palavra genérica não conta como tema, nem vinda do perfil", () => {
+    expect(scoreFit("Aumente o valor do seu produto e feche mais vendas", ["valor", "produto", "vendas", "serviços"]))
+      .toEqual({ fit: 0, reason: null });
+    expect(scoreFit("Como participar de pregão eletrônico", ["pregão", "valor"]).fit).toBeGreaterThan(0);
+  });
+
+  it("profileKeywords ignora a prosa da oferta e da descrição, e fica só com o vocabulário do tema", () => {
+    const { db } = createTestDatabase();
+    saveBusinessProfile(db, {
+      ...perfil,
+      businessDescription: "Ajudamos empresas a ganhar dinheiro com o mercado de compras",
+      offer: "Assinatura de R$ 49 por mês com valor travado",
+      targetKeywords: ["licitação", "pregão", "PNCP"], targetIndustries: ["ferragens", "serviços"],
+    });
+    const termos = profileKeywords(db).map((t) => t.toLowerCase());
+    expect(termos).toContain("licitação");
+    expect(termos).toContain("ferragens");
+    expect(termos).not.toContain("serviços"); // genérica: casava com qualquer Reel de empreendedorismo
+    expect(termos.join(" ")).not.toContain("assinatura");
+    expect(termos.join(" ")).not.toContain("dinheiro");
+  });
+
+  it("a lista esconde o que não cita nenhum termo do negócio, e as estatísticas contam os dois grupos", () => {
+    const { db } = createTestDatabase();
+    saveBusinessProfile(db, { ...perfil, targetKeywords: ["licitação", "pregão", "PNCP"] });
+    const doTema = upsertContentPiece(db, { handle: "a", externalId: "1", url: "u1", views: 9000, transcript: "como achar licitação e ganhar o pregão" });
+    upsertContentPiece(db, { handle: "b", externalId: "2", url: "u2", views: 34100000, caption: "Unboxing Prada de Orlando" });
+    expect(listContentPieces(db).map((p) => p.id)).toEqual([doTema.id]);
+    expect(listContentPieces(db, { incluirForaDoTema: true })).toHaveLength(2);
+    const stats = contentLibraryStats(db);
+    expect(stats.pieces).toBe(2);
+    expect(stats.on_topic).toBe(1);
+    expect(stats.offTopic).toBe(1);
+    expect(stats.best_views).toBe(9000); // o maior alcance mostrado é do que interessa, não do unboxing
   });
 });

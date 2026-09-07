@@ -22,7 +22,8 @@
     "db:seed": "tsx src/db/seed.ts",
     "db:backup": "tsx src/db/backup.ts",
     "content:import": "tsx src/db/import-content.ts",
-    "smoke:real": "tsx src/testing/real-source-smoke.ts"
+    "smoke:real": "tsx src/testing/real-source-smoke.ts",
+    "content:rescore": "tsx src/db/rescore-content.ts"
   },
   "dependencies": {
     "better-sqlite3": "^13.0.3",

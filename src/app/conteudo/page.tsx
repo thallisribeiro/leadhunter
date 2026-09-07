@@ -19,17 +19,19 @@ export default async function ContentPage({ searchParams }: { searchParams: Prom
     minFit: value("fit") ? Number(value("fit")) : undefined,
     starred: value("starred") === "yes" || undefined,
     search: value("q") || undefined,
+    incluirForaDoTema: value("tema") === "todas",
   }, sort);
   const accounts = listContentAccounts(db);
   const stats = contentLibraryStats(db);
 
   return <>
     <PageHeader eyebrow="Biblioteca" title="Conteúdo do nicho"
-      description="O que já provou alcance nas contas que a sua audiência segue, com transcrição e gancho, para modelar a próxima peça em vez de chutar pauta. Alcance e engajamento são do dia da leitura."
+      description={`O que já provou alcance nas contas que a sua audiência segue, com transcrição e gancho, para modelar a próxima peça em vez de chutar pauta.${stats.offTopic ? ` ${stats.offTopic} peça(s) sem nenhum termo do seu negócio ficam escondidas — são referência de formato, não de tema.` : ""} Alcance e engajamento são do dia da leitura.`}
       actions={<form action={rescoreLibraryAction}><button className="button" type="submit">Recalcular aderência</button></form>} />
 
     <section className="overview-grid">
-      <div className="metric"><span>Peças guardadas</span><strong>{stats.pieces}</strong></div>
+      <div className="metric"><span>Do seu tema</span><strong>{stats.on_topic}</strong></div>
+      <div className="metric"><span>Fora do tema</span><strong>{stats.offTopic}</strong></div>
       <div className="metric"><span>Contas mapeadas</span><strong>{stats.accounts}</strong></div>
       <div className="metric"><span>Com transcrição</span><strong>{stats.transcribed}</strong></div>
       <div className="metric"><span>Favoritas</span><strong>{stats.starred}</strong></div>
@@ -57,6 +59,7 @@ export default async function ContentPage({ searchParams }: { searchParams: Prom
       <Input name="views" type="number" min="0" defaultValue={value("views")} placeholder="Alcance mínimo" />
       <Input name="fit" type="number" min="0" max="100" defaultValue={value("fit")} placeholder="Aderência mín." />
       <select className="input" name="starred" defaultValue={value("starred")}><option value="">Todas</option><option value="yes">Só favoritas</option></select>
+      <select className="input" name="tema" defaultValue={value("tema")}><option value="">Só do meu tema</option><option value="todas">Incluir fora do tema</option></select>
       <select className="input" name="sort" defaultValue={sort}>
         <option value="views">Ordenar: alcance</option><option value="fit">Aderência</option>
         <option value="performance">Acima da média da conta</option><option value="date">Data</option>
@@ -65,7 +68,10 @@ export default async function ContentPage({ searchParams }: { searchParams: Prom
     </form>
 
     {pieces.length === 0
-      ? <EmptyState title="Biblioteca vazia" description="Rode a pesquisa de conteúdo (scripts/insta) e importe com pnpm content:import. Cada Reel entra aqui com alcance, transcrição, gancho e nota de aderência ao seu negócio." />
+      ? <EmptyState title={stats.pieces ? "Nada do seu tema com esses filtros" : "Biblioteca vazia"}
+          description={stats.pieces
+            ? "As peças guardadas não citam nenhum termo do seu negócio. Preencha as palavras-chave do ICP em Configurações, clique em Recalcular aderência, ou escolha 'Incluir fora do tema'."
+            : "Rode a pesquisa de conteúdo (scripts/insta) e importe com pnpm content:import. Cada Reel entra aqui com alcance, transcrição, gancho e nota de aderência ao seu negócio."} />
       : <table className="table"><thead><tr><th>Gancho</th><th>Conta</th><th>Alcance</th><th>Curtidas</th><th>Coment.</th><th>Duração</th><th>Aderência</th><th></th></tr></thead><tbody>
         {pieces.map((p) => <tr key={p.id}>
           <td><Link href={`/conteudo/${p.id}`}>{p.hook ?? "(sem gancho lido)"}</Link>

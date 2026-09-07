@@ -1,6 +1,10 @@
 import type { AppDatabase } from "@/db/client";
 
-export interface ContentFilters { handle?: string; minViews?: number; minFit?: number; starred?: boolean; search?: string; kind?: string }
+export interface ContentFilters { handle?: string; minViews?: number; minFit?: number; starred?: boolean; search?: string; kind?: string; incluirForaDoTema?: boolean }
+
+// Peça sem NENHUM termo do nicho no texto é referência de formato, não de tema — e foi o que encheu
+// a biblioteca de unboxing e motivacional em 07/09/2026. Fica guardada, mas escondida por padrão.
+export const FIT_MINIMO = 1;
 export type ContentSort = "views" | "fit" | "performance" | "date";
 
 export interface ContentPieceRow {
@@ -21,7 +25,8 @@ export function listContentPieces(database: AppDatabase, filters: ContentFilters
   const where: string[] = []; const args: Array<string | number> = [];
   if (filters.handle) { where.push("a.handle = ?"); args.push(filters.handle.replace(/^@/, "").toLowerCase()); }
   if (filters.minViews != null) { where.push("COALESCE(p.views, 0) >= ?"); args.push(filters.minViews); }
-  if (filters.minFit != null) { where.push("p.fit >= ?"); args.push(filters.minFit); }
+  const minFit = filters.minFit ?? (filters.incluirForaDoTema ? 0 : FIT_MINIMO);
+  if (minFit > 0) { where.push("p.fit >= ?"); args.push(minFit); }
   if (filters.starred) where.push("p.starred = 1");
   if (filters.kind) { where.push("p.kind = ?"); args.push(filters.kind); }
   if (filters.search) { where.push("lower(COALESCE(p.caption, '') || ' ' || COALESCE(p.transcript, '') || ' ' || COALESCE(p.hook, '')) LIKE ?"); args.push(`%${filters.search.toLowerCase()}%`); }
@@ -47,9 +52,11 @@ export function contentLibraryStats(database: AppDatabase) {
   const stats = database.$client.prepare(`SELECT count(*) AS pieces, count(DISTINCT account_id) AS accounts,
     COALESCE(sum(CASE WHEN starred = 1 THEN 1 ELSE 0 END), 0) AS starred,
     COALESCE(sum(CASE WHEN transcript IS NOT NULL AND length(transcript) > 40 THEN 1 ELSE 0 END), 0) AS transcribed,
-    COALESCE(max(views), 0) AS best_views, COALESCE(avg(fit), 0) AS average_fit FROM content_pieces`)
-    .get() as { pieces: number; accounts: number; starred: number; transcribed: number; best_views: number; average_fit: number };
-  return { ...stats, averageFit: Math.round(stats.average_fit) };
+    COALESCE(sum(CASE WHEN fit >= ${FIT_MINIMO} THEN 1 ELSE 0 END), 0) AS on_topic,
+    COALESCE(max(CASE WHEN fit >= ${FIT_MINIMO} THEN views END), 0) AS best_views,
+    COALESCE(avg(CASE WHEN fit >= ${FIT_MINIMO} THEN fit END), 0) AS average_fit FROM content_pieces`)
+    .get() as { pieces: number; accounts: number; starred: number; transcribed: number; on_topic: number; best_views: number; average_fit: number };
+  return { ...stats, offTopic: stats.pieces - stats.on_topic, averageFit: Math.round(stats.average_fit) };
 }
 
 function toPiece(row: Record<string, unknown>): ContentPieceRow {

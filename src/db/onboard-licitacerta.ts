@@ -57,7 +57,15 @@ saveBusinessProfile(db, {
   targetBusinessTypes: ["Fornecedor que já venceu licitação no PNCP nos últimos 60 dias", "ME ou EPP (porte da Receita) com 1–5 compras públicas, até 2 UFs, R$ 5 mil a R$ 300 mil ganhos", "Loja de bairro ou prestador local sem setor de licitação dedicado"],
   targetLocations: ["Brasil"],
   targetCompanySize: "ME/EPP, 1 a 20 funcionários",
-  targetKeywords: [],
+  // Vocabulário do nicho (07/09/2026). Além de descrever o ICP, é o que decide a ADERÊNCIA da
+  // biblioteca de conteúdo: sem isto, Reel de motivação e unboxing entravam junto com licitação.
+  targetKeywords: [
+    "licitação", "licitações", "licitar", "licitante", "pregão", "pregoeiro", "PNCP", "edital", "editais",
+    "compras públicas", "contratação pública", "registro de preços", "dispensa de licitação", "ata de registro",
+    "vender para o governo", "vender para prefeitura", "fornecedor do governo", "compras.gov", "comprasnet",
+    "portal de compras", "CNAE", "CAF", "SICAF", "certidão negativa", "habilitação", "proposta comercial",
+    "lei 14.133", "contrato público", "empenho", "homologação", "prefeitura", "órgão público", "MEI",
+  ],
   positiveSignals: ["venceu licitação", "registro de preços", "pregão", "dispensa", "WhatsApp comercial", "site próprio", "poucas UFs"],
   negativeSignals: ["consultoria em licitações", "assessoria em compras governamentais", "robô de lances", "muitas UFs", "distribuidor nacional"],
   exclusions: ["Porte DEMAIS na Receita (média/grande empresa, tem equipe de licitação)", "Órgão público, autarquia ou consórcio (CNAE 84)", "Empresa que vive de licitação para terceiros (concorrente)", "Quem pediu remoção (opt-out permanente, por telefone)", "Quem já é cliente cadastrado"],
