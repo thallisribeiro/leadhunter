@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 const items = [
   ["/", "⌂", "Visão geral"], ["/campaigns", "◈", "Campanhas"], ["/leads", "◎", "Leads"],
   ["/funil", "⫶", "Funil"], ["/conversas", "✉", "Conversas"], ["/experimentos", "⚖", "Experimentos"],
-  ["/shortlist", "◇", "Shortlist"], ["/outreach", "↗", "Outreach"], ["/jobs", "≋", "Jobs"],
+  ["/shortlist", "◇", "Shortlist"], ["/conteudo", "▤", "Conteúdo"], ["/outreach", "↗", "Outreach"], ["/jobs", "≋", "Jobs"],
   ["/settings/instagram", "◉", "Instagram"], ["/settings/business", "⚙", "Configurações"],
 ] as const;
 

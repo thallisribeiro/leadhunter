@@ -315,3 +315,44 @@ export const exportRecords = sqliteTable("exports", {
   rowCount: integer("row_count").notNull(),
   createdAt: text("created_at").notNull(),
 });
+
+// Biblioteca de conteúdo (07/09/2026): as contas de referência do nicho e as peças que performaram
+// nelas. Serve a duas coisas ao mesmo tempo — modelar o próximo conteúdo em cima do que já provou
+// alcance, e dar contexto de nicho para o motor de conversa (o que essa audiência discute).
+export const contentAccounts = sqliteTable("content_accounts", {
+  id: text("id").primaryKey(),
+  platform: text("platform").notNull().default("instagram"),
+  handle: text("handle").notNull(),
+  name: text("name"),
+  bio: text("bio"),
+  followers: integer("followers"),
+  posts: integer("posts"),
+  role: text("role").notNull().default("referencia"),
+  notes: text("notes"),
+  medianViews: integer("median_views"),
+  lastMappedAt: text("last_mapped_at"),
+  ...utcColumns,
+}, (table) => ({ handleUnique: uniqueIndex("content_accounts_handle_unique").on(table.platform, table.handle) }));
+
+export const contentPieces = sqliteTable("content_pieces", {
+  id: text("id").primaryKey(),
+  accountId: text("account_id").notNull().references(() => contentAccounts.id, { onDelete: "cascade" }),
+  platform: text("platform").notNull().default("instagram"),
+  externalId: text("external_id").notNull(),
+  url: text("url").notNull(),
+  kind: text("kind").notNull().default("reel"),
+  postedAt: text("posted_at"),
+  views: integer("views"),
+  likes: integer("likes"),
+  comments: integer("comments"),
+  durationSeconds: integer("duration_seconds"),
+  caption: text("caption"),
+  transcript: text("transcript"),
+  hook: text("hook"),
+  fit: integer("fit").notNull().default(0),
+  fitReason: text("fit_reason"),
+  performance: real("performance"),
+  starred: integer("starred").notNull().default(0),
+  mediaPath: text("media_path"),
+  ...utcColumns,
+}, (table) => ({ externalUnique: uniqueIndex("content_pieces_external_unique").on(table.platform, table.externalId) }));

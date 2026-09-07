@@ -10,5 +10,7 @@ export default defineConfig([
       "@next/next/no-html-link-for-pages": "off",
     },
   },
-  globalIgnores([".next/**", "coverage/**", "playwright-report/**"]),
+  // scripts/insta são utilitários de linha de comando em CommonJS puro, rodados à mão contra o
+  // Chrome do operador (não entram no bundle do Next e não seguem as regras de módulo do app).
+  globalIgnores([".next/**", "coverage/**", "playwright-report/**", "scripts/**", ".chrome-profile/**"]),
 ]);

@@ -245,3 +245,33 @@ Quando o lead responde, o webhook verifica a assinatura, grava o evento uma vez 
 ## 18. WhatsApp opcional
 
 `WHATSAPP_QUEUE_DIR` aponta para a pasta de fila de um listener externo (um JSON por mensagem, formato `{ numero, mensagem, imediato, naoAntesDe, origem }`). Sem a variável, o encaminhamento ao WhatsApp acontece pelo link configurado no perfil do negócio.
+
+## 19. Pesquisa de conteúdo do nicho (biblioteca)
+
+Os scripts em `scripts/insta/` usam **o mesmo Chrome logado** do passo 15 (CDP em `127.0.0.1:9222`) — nenhuma API privada, nenhum login automatizado. Eles não escrevem no banco: deixam JSON numa pasta de pesquisa, e o import é um passo separado e conferível.
+
+```bash
+# 1. quem tem alcance no seu nicho (busca do próprio Instagram, com a sua sessão)
+node scripts/insta/buscar-contas-insta.js "licitação" "pregão" "vender para o governo"
+
+# 2. Reels de uma conta, ranqueados pela visualização que aparece no grid
+node scripts/insta/mapear-reels.js pedraodalicitacao 12
+
+# 3. baixa os melhores (vídeo e áudio vêm em faixas separadas; o script desmuta para pegar as duas)
+node scripts/insta/baixar-reels.js pedraodalicitacao 12
+
+# 4. transcreve local, sem API (faster-whisper)
+python scripts/insta/transcrever-reels.py pedraodalicitacao
+
+# 5. importa tudo para a biblioteca (idempotente: rodar de novo só atualiza)
+pnpm content:import ./pesquisa
+```
+
+Depois disso, `/conteudo` mostra cada peça com alcance, gancho, transcrição e **aderência** ao seu negócio. A aderência conta quantos termos do seu perfil (segmentos, palavras-chave, sinais, jargão, oferta) aparecem no texto da peça — então preencha *Palavras-chave do ICP* em `/settings/business` antes de cobrar sentido dela, e use "Recalcular aderência" depois de mexer no perfil.
+
+Para escrever DMs à mão com contexto real (bio + últimas legendas) e registrá-las no banco como o worker faz:
+
+```bash
+node scripts/insta/perfil-insta.js meirelesbeth_ licitacaodescomplicada   # o que a pessoa publicou
+node scripts/insta/enviar-dm.js dms.json                                  # [{handle, nome, texto}], teto de 5/20h
+```
