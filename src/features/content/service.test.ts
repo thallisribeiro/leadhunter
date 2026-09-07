@@ -105,6 +105,21 @@ describe("só conteúdo do tema", () => {
     expect(scoreFit("Siga @pedraodalicitacao #licitacao", ["licitação"]).fit).toBeGreaterThan(0);
   });
 
+  it("reimportar a lista sem transcrição não zera a aderência de quem já tem texto guardado", () => {
+    const { db } = createTestDatabase();
+    saveBusinessProfile(db, { ...perfil, targetKeywords: ["licitação", "pregão", "PNCP"] });
+    const termos = profileKeywords(db);
+    const peca = upsertContentPiece(db, { handle: "p", externalId: "x", url: "u/x", views: 8489, transcript: "você vai vender no pregão e achar licitação no PNCP" }, termos);
+    expect(peca.fit).toBeGreaterThan(0);
+    // segunda leitura do grid: só métrica, sem transcrição (é o que o import faz)
+    const relido = upsertContentPiece(db, { handle: "p", externalId: "x", url: "u/x", views: 9000 }, termos);
+    expect(relido.fit).toBeGreaterThan(0);
+    const guardada = getContentPiece(db, peca.id)!;
+    expect(guardada.fit).toBeGreaterThan(0);
+    expect(guardada.hook).toContain("pregão");
+    expect(listContentPieces(db).map((p) => p.id)).toEqual([peca.id]);
+  });
+
   it("palavra genérica não conta como tema, nem vinda do perfil", () => {
     expect(scoreFit("Aumente o valor do seu produto e feche mais vendas", ["valor", "produto", "vendas", "serviços"]))
       .toEqual({ fit: 0, reason: null });

@@ -114,15 +114,21 @@ export function upsertContentPiece(database: AppDatabase, input: ContentPieceInp
   const conta = upsertContentAccount(database, { handle: input.handle, platform });
   const now = new Date().toISOString();
   const termos = keywords ?? profileKeywords(database);
+  const existing = database.$client.prepare("SELECT id, caption, transcript FROM content_pieces WHERE platform = ? AND external_id = ?")
+    .get(platform, input.externalId) as { id: string; caption: string | null; transcript: string | null } | undefined;
   const caption = texto(input.caption); const transcript = texto(input.transcript);
   const views = inteiro(input.views); const likes = inteiro(input.likes); const comments = inteiro(input.comments);
   const durationSeconds = inteiro(input.durationSeconds);
-  const hook = extractHook(transcript, caption);
-  const { fit, reason } = scoreFit(`${caption ?? ""} ${transcript ?? ""}`, termos);
+  // Gancho e aderência saem do texto FINAL da peça, não só do que veio nesta leitura: reimportar a
+  // lista de Reels sem as transcrições zerava o fit de quem já tinha transcrição guardada, e o melhor
+  // conteúdo do nicho aparecia como "fora do tema" (07/09/2026).
+  const captionFinal = caption ?? existing?.caption ?? null;
+  const transcriptFinal = transcript ?? existing?.transcript ?? null;
+  const hook = extractHook(transcriptFinal, captionFinal);
+  const { fit, reason } = scoreFit(`${captionFinal ?? ""} ${transcriptFinal ?? ""}`, termos);
   // Performance = views da peça sobre a mediana da conta. É o que separa "bombou" de "a conta é grande".
   const mediana = (database.$client.prepare("SELECT median_views AS m FROM content_accounts WHERE id = ?").get(conta.id) as { m: number | null } | undefined)?.m ?? null;
   const performance = views && mediana ? Number((views / mediana).toFixed(2)) : null;
-  const existing = database.$client.prepare("SELECT id FROM content_pieces WHERE platform = ? AND external_id = ?").get(platform, input.externalId) as { id: string } | undefined;
   if (existing) {
     database.$client.prepare(`UPDATE content_pieces SET url = ?, kind = ?, posted_at = COALESCE(?, posted_at), views = COALESCE(?, views),
       likes = COALESCE(?, likes), comments = COALESCE(?, comments), duration_seconds = COALESCE(?, duration_seconds),
@@ -150,10 +156,12 @@ export function rescoreLibrary(database: AppDatabase) {
   const termos = profileKeywords(database);
   const rows = database.$client.prepare("SELECT id, caption, transcript FROM content_pieces").all() as Array<{ id: string; caption: string | null; transcript: string | null }>;
   const now = new Date().toISOString();
-  const update = database.$client.prepare("UPDATE content_pieces SET fit = ?, fit_reason = ?, updated_at = ? WHERE id = ?");
+  // O gancho também é refeito: peça que ganhou transcrição depois da primeira leitura ficava com o
+  // gancho da legenda ("Siga @fulano") em vez da primeira frase falada.
+  const update = database.$client.prepare("UPDATE content_pieces SET fit = ?, fit_reason = ?, hook = ?, updated_at = ? WHERE id = ?");
   for (const row of rows) {
     const { fit, reason } = scoreFit(`${row.caption ?? ""} ${row.transcript ?? ""}`, termos);
-    update.run(fit, reason, now, row.id);
+    update.run(fit, reason, extractHook(row.transcript, row.caption), now, row.id);
   }
   return rows.length;
 }
